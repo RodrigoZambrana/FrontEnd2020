@@ -5,8 +5,7 @@ import Button from 'react-bootstrap/Button';
 // Ya estoy recibiendo desestructuradas a las props! No necesito
 //      tener una variable para las props.
 const Producto = ({ producto }) => (
-	<div className='row'>
-		<div className='col-md-2'>
+		 <div className='col-md-3'>
 			<Card style={{ width: '300px' }}>
 				<Card.Img src={producto.photo} height='200px' />
 				<Card.Body>
@@ -16,8 +15,7 @@ const Producto = ({ producto }) => (
 					<Button variant='primary'>Agregar al carrito</Button>
 				</Card.Body>
 			</Card>
-		</div>
-	</div>
+		 </div>
 );
 
 export default Producto;

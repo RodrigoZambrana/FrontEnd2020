@@ -23,7 +23,7 @@ export default class PaginaInicial extends React.Component {
 		return (
 			<>
 			<Header/>
-			<div className='mainPage  row'>
+			<div className='mainPage row'>
 			<div className='col-md-12'>
 				<Nav className='navbar navbar-light col-12'>
 					<Form className='form-inline col-12'>
@@ -40,9 +40,11 @@ export default class PaginaInicial extends React.Component {
 				</Nav>
 				</div>
 				<Carrito/>
-				<div className='row'>
-				{this.state.products.map((producto, index) => <Producto key={index} producto={producto} />)}	
+				<div className='mainPage row '>
+				{this.state.products.map((producto, index) => 
+				<Producto key={index} producto={producto} />)}
 				</div>
+
 				</div>
 			</>
 		);
