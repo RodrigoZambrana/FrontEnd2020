@@ -2,13 +2,15 @@ import React, { Component } from 'react';
 import { loginUser } from './services';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import Alert from 'react-bootstrap/Alert'
 
-export default class Login extends Component {
+class Login extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			email: '',
-			password: ''
+			password: '',
+			errorMsg: '',
 		};
 	}
 
@@ -25,14 +27,20 @@ export default class Login extends Component {
 			this.setState({ email: '', contrasena: '' }); */
 			if (status === 200) {
 				this.setState({ email: '', contrasena: '' });
+				sessionStorage.setItem("usuarioLogueado", 1);
 				return (window.location = '/PaginaInicial');
 			}
+			this.setState({ errorMsg: "Usuario o contraseña incorrectos. Intente nuevamente." });
+
 			console.log(status);
 		});
 		/* .catch((response) => {
 				console.log(response);
 			}); */
 	};
+
+
+
 
 	render() {
 		return (
@@ -66,9 +74,18 @@ export default class Login extends Component {
 					<p className='forgot-password text-right'>
 						¿No tienes usuario? <a href='/RegistrarUsuario'>Registrate</a>
 					</p>
-					<span id='spanFeedback' />
+
+
 				</Form>
+				{
+					this.state.errorMsg && <Alert variant="danger">
+						{this.state.errorMsg}
+					</Alert>
+
+				}
 			</div>
 		);
 	}
 }
+
+export default Login;

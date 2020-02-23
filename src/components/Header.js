@@ -1,6 +1,6 @@
-import React from 'react';
+import React from 'react';/* 
 import { BrowserRouter as Link } from 'react-router-dom';
-import Login from './Login';
+import Login from './Login'; */
 
 const Header = () => (
 	<header className='App-header'>

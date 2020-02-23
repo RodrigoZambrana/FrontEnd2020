@@ -2,13 +2,15 @@ import React, { Component } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { createUser } from './services';
+import Alert from 'react-bootstrap/Alert'
 
 export default class RegistrarUsuario extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			email: '',
-			password: ''
+			password: '',
+			errorMsg: '',
 		};
 	}
 	handleChange = event => {
@@ -27,8 +29,9 @@ export default class RegistrarUsuario extends Component {
 				if (status === 200) {
 					this.setState({ email: '', contrasena: '' });
 					return (window.location = '/PaginaInicial');
-				}
+				} this.setState({ errorMsg: "Datos incorrectos. Intente nuevamente." });
 			})
+
 			.catch(response => {
 				console.log(response);
 			});
@@ -65,6 +68,13 @@ export default class RegistrarUsuario extends Component {
 					</Button>
 					<span id='spanFeedback' />
 				</Form>
+				<br></br>
+				{
+					this.state.errorMsg && <Alert variant="danger">
+						{this.state.errorMsg}
+					</Alert>
+
+				}
 			</div>
 		);
 	}
