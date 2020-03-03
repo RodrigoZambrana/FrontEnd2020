@@ -22,6 +22,7 @@ export default class PaginaInicial extends React.Component {
 			productosComprados: [],
 			productoFiltered: [],
 			cantProducto: 1,
+			costoSubTotal: 0,
 			costoTotal: 0,
 		};
 
@@ -41,11 +42,36 @@ export default class PaginaInicial extends React.Component {
 		);
 	}
 
-	agregarAlCarrito = (nuevoProducto) => {
+
+	addNewItem(producto) {
 		const { productosComprados } = this.state;
-		const otroProducto = nuevoProducto;
-		this.setState({ nuevoProducto, productosComprados: [...productosComprados, otroProducto] });
-		// this.calcularTotal();
+		let newItem = {
+			cantidad: 1,
+			name: producto.name,
+			price: producto.price,
+
+		};
+
+		//this.state.productosComprados.push(newItem);
+		this.setState({ productosComprados: [...productosComprados, newItem] });
+	}
+
+
+	agregarAlCarrito = (nuevoProducto) => {
+		debugger;
+		const { productosComprados } = this.state;
+		let encontreProducto = productosComprados.find(producto => producto.name === nuevoProducto.name);
+		console.log(encontreProducto) //muestra esto
+		if (!encontreProducto) {
+			this.addNewItem(nuevoProducto);
+
+		} else {
+			let sinRepetido = productosComprados.filter(producto => producto.name !== nuevoProducto.name);
+			let nuevoExistente = sinRepetido.push({ ...encontreProducto, cantidad: encontreProducto.cantidad + 1 });
+			this.setState({ productosComprados: sinRepetido });
+
+		}
+
 	};
 
 	eliminarDelCarrito = unNombre => {
@@ -71,7 +97,7 @@ export default class PaginaInicial extends React.Component {
 	calcularTotal = () => {
 		this.state.productosComprados.forEach(producto => {
 			const subTotal = Number(producto.price) + Number(this.state.costoTotal);
-			this.setState({ costoTotal: subTotal })
+			this.setState({ costoSubTotal: subTotal })
 
 		});
 
@@ -151,16 +177,18 @@ export default class PaginaInicial extends React.Component {
 										<tr>
 											<th>Cantidad</th>
 											<th>Producto</th>
-											<th>Precio</th>
+											<th>Precio Unitario</th>
+											<th>Precio Total</th>
 											<th>Eliminar</th>
 										</tr>
 									</thead>
 									<tbody>
 										{this.state.productosComprados.map((producto, index) =>
 											<tr>
-												<td>{this.state.cantProducto}</td>
+												<td>{producto.cantidad}</td>
 												<td key={index}>{producto.name}</td>
 												<td>{producto.price}</td>
+												<td>Precio Total</td>
 												<Button
 													variant='primary'
 													type="button"
@@ -172,7 +200,12 @@ export default class PaginaInicial extends React.Component {
 													</Button>
 											</tr>
 										)}
-										<td colSpan="4">Total a pagar: ${this.state.costoTotal}</td>
+										<tr col-span="5"> Sub-Total:$
+										<td>precio</td>
+										</tr>
+										<tr>Total:$
+										<td>precio</td>
+										</tr>
 									</tbody>
 
 								</Table>
