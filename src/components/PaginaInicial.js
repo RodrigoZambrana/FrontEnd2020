@@ -21,7 +21,6 @@ export default class PaginaInicial extends React.Component {
 			listaProductos: [],
 			productosComprados: [],
 			productoFiltered: [],
-			cantProducto: 1,
 			costoSubTotal: 0,
 			costoTotal: 0,
 		};
@@ -32,7 +31,7 @@ export default class PaginaInicial extends React.Component {
 	componentDidMount() {
 
 		if (sessionStorage.getItem("usuarioLogueado") !== "1") {
-			return (window.location = '/PaginaInicial');
+			return (window.location = '/Login');
 		}
 
 		ListarProductos().then(data =>
@@ -56,54 +55,44 @@ export default class PaginaInicial extends React.Component {
 		this.setState({ productosComprados: [...productosComprados, newItem] });
 	}
 
-
 	agregarAlCarrito = (nuevoProducto) => {
 		debugger;
 		const { productosComprados } = this.state;
 		let encontreProducto = productosComprados.find(producto => producto.name === nuevoProducto.name);
-		console.log(encontreProducto) //muestra esto
 		if (!encontreProducto) {
 			this.addNewItem(nuevoProducto);
 
 		} else {
 			let sinRepetido = productosComprados.filter(producto => producto.name !== nuevoProducto.name);
-			let nuevoExistente = sinRepetido.push({ ...encontreProducto, cantidad: encontreProducto.cantidad + 1 });
+			let aumentarCantidad = sinRepetido.push({ ...encontreProducto, cantidad: encontreProducto.cantidad + 1 });
 			this.setState({ productosComprados: sinRepetido });
 
 		}
-
+		this.calcularTotal();
 	};
 
 	eliminarDelCarrito = unNombre => {
 		const { productosComprados } = this.state;
 		const productoEliminado = productosComprados.filter(producto => unNombre !== producto.name);
 		this.setState({ productosComprados: productoEliminado });
-		// this.calcularTotal();
-	};
-
-
-	existeProducto = (unProducto) => {
-		let existe = false;
-		this.state.productosComprados.forEach(producto => {
-			if (producto.name === unProducto.name) {
-				existe = true;
-			}
-
-		});
-
-		return existe;
+		this.calcularTotal();
 	};
 
 	calcularTotal = () => {
-		this.state.productosComprados.forEach(producto => {
-			const subTotal = Number(producto.price) + Number(this.state.costoTotal);
-			this.setState({ costoSubTotal: subTotal })
-
-		});
-
-		/* const precioPorProducto = this.state.productosComprados.map((producto) => Number(producto.price) + Number(this.state.costoTotal));
-		console.log(producto.price);
-		this.setState({ costoTotal: precioPorProducto }); */
+		let subTotal = 0;
+		if (this.state.productosComprados.length === 0) {
+			this.setState({
+				costoSubTotal: 0,
+				costoTotal: 0,
+			});
+		} else {
+			this.state.productosComprados.forEach(producto => {
+				subTotal = subTotal + ((producto.price).toFixed() * (producto.cantidad).toFixed());
+				this.setState({ costoSubTotal: subTotal });
+			});
+			let total = subTotal + (subTotal * 22 / 100);
+			this.setState({ costoTotal: total.toFixed() });
+		}
 	};
 
 
@@ -201,10 +190,10 @@ export default class PaginaInicial extends React.Component {
 											</tr>
 										)}
 										<tr col-span="5"> Sub-Total:$
-										<td>precio</td>
+										<td>{this.state.costoSubTotal}</td>
 										</tr>
 										<tr>Total:$
-										<td>precio</td>
+										<td>{this.state.costoTotal}</td>
 										</tr>
 									</tbody>
 
@@ -241,11 +230,6 @@ export default class PaginaInicial extends React.Component {
 						)
 
 					}
-
-
-
-
-
 				</div>
 			</>
 		);
