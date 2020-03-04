@@ -133,10 +133,23 @@ export default class PaginaInicial extends React.Component {
 		});
 	};
 
+	funcSalir = () => {
+		this.setState({
+			nombreProducto: '',
+			filtro: '',
+			productosComprados: [],
+			costoSubTotal: 0,
+			costoTotal: 0,
+		});
+		sessionStorage.clear();
+		return (window.location = '/Login');
+	};
+
+
 	render() {
 		return (
 			<>
-				<Header />
+				<Header Salir={this.funcSalir} />
 				<div className='mainPage row'>
 					<div className='col-md-12'>
 						<Nav className='navbar navbar-light col-12'>
@@ -181,7 +194,7 @@ export default class PaginaInicial extends React.Component {
 												<td>{producto.cantidad}</td>
 												<td key={index}>{producto.name}</td>
 												<td>{producto.price}</td>
-												<td>{producto.price * producto.cantidad}</td>
+												<td>{producto.price * producto.cantidad.toFixed()}</td>
 												<Button
 													variant='primary'
 													type="button"
