@@ -17,13 +17,6 @@ class Carrito extends Component {
       this.setState({ producto: '', productosComprados: [...productosComprados, nuevoProducto] });
     }
   };
-  /* 
-    eliminarDelCarrito = nombre => {
-      const { productosComprados } = this.state;
-      const productosFiltrados = productosComprados.filter(producto => producto.nombre !== nombre);
-      this.setState({ tareas: productosFiltrados });
-    }; */
-
   render() {
 
     return (
@@ -60,9 +53,6 @@ class Carrito extends Component {
 					</Button>
 
       </div>
-
-
-
     );
 
   }

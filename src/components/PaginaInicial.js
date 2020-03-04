@@ -11,8 +11,6 @@ import Alert from 'react-bootstrap/Alert'
 import { Nav } from 'react-bootstrap';
 
 export default class PaginaInicial extends React.Component {
-
-
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -40,61 +38,6 @@ export default class PaginaInicial extends React.Component {
 			})
 		);
 	}
-
-
-	addNewItem(producto) {
-		const { productosComprados } = this.state;
-		let newItem = {
-			cantidad: 1,
-			name: producto.name,
-			price: producto.price,
-
-		};
-
-		//this.state.productosComprados.push(newItem);
-		this.setState({ productosComprados: [...productosComprados, newItem] });
-	}
-
-	agregarAlCarrito = (nuevoProducto) => {
-		debugger;
-		const { productosComprados } = this.state;
-		let encontreProducto = productosComprados.find(producto => producto.name === nuevoProducto.name);
-		if (!encontreProducto) {
-			this.addNewItem(nuevoProducto);
-
-		} else {
-			let sinRepetido = productosComprados.filter(producto => producto.name !== nuevoProducto.name);
-			let aumentarCantidad = sinRepetido.push({ ...encontreProducto, cantidad: encontreProducto.cantidad + 1 });
-			this.setState({ productosComprados: sinRepetido });
-
-		}
-		this.calcularTotal();
-	};
-
-	eliminarDelCarrito = unNombre => {
-		const { productosComprados } = this.state;
-		const productoEliminado = productosComprados.filter(producto => unNombre !== producto.name);
-		this.setState({ productosComprados: productoEliminado });
-		this.calcularTotal();
-	};
-
-	calcularTotal = () => {
-		let subTotal = 0;
-		if (this.state.productosComprados.length === 0) {
-			this.setState({
-				costoSubTotal: 0,
-				costoTotal: 0,
-			});
-		} else {
-			this.state.productosComprados.forEach(producto => {
-				subTotal = subTotal + ((producto.price).toFixed() * (producto.cantidad).toFixed());
-				this.setState({ costoSubTotal: subTotal });
-			});
-			let total = subTotal + (subTotal * 22 / 100);
-			this.setState({ costoTotal: total.toFixed() });
-		}
-	};
-
 
 	handleChange(e) {
 		// Variable to hold the original version of the list
@@ -132,6 +75,63 @@ export default class PaginaInicial extends React.Component {
 	}
 
 
+	eliminarDelCarrito = unNombre => {
+		const { productosComprados } = this.state;
+		const productoEliminado = productosComprados.filter(producto => unNombre !== producto.name);
+		this.setState({ productosComprados: productoEliminado });
+		this.calcularTotal();
+	};
+	agregarAlCarrito = (nuevoProducto) => {
+		debugger;
+		let encontreProducto = this.state.productosComprados.find(producto => producto.name === nuevoProducto.name);
+		if (!encontreProducto) {
+			this.addNewItem(nuevoProducto);
+		} else {
+			let sinRepetido = this.state.productosComprados.filter(producto => producto.name !== nuevoProducto.name);
+			let aumentarCantidad = sinRepetido.push({ ...encontreProducto, cantidad: encontreProducto.cantidad + 1 });
+			this.setState({ productosComprados: sinRepetido });
+
+		}
+		this.calcularTotal();
+	};
+
+	addNewItem(producto) {
+		const { productosComprados } = this.state;
+		let newItem = {
+			cantidad: 1,
+			name: producto.name,
+			price: producto.price,
+		};
+		this.setState({ productosComprados: [...productosComprados, newItem] });
+	}
+
+	calcularTotal = () => {
+		let subTotal = 0;
+		if (this.state.productosComprados.length === 0) {
+			this.setState({
+				costoSubTotal: 0,
+				costoTotal: 0,
+			});
+		} else {
+			this.state.productosComprados.forEach(producto => {
+				subTotal = subTotal + ((producto.price).toFixed() * (producto.cantidad).toFixed());
+				this.setState({ costoSubTotal: subTotal });
+			});
+			let total = subTotal + (subTotal * 22 / 100);
+			this.setState({ costoTotal: total.toFixed() });
+		}
+	};
+
+
+	finalizarCompra = () => {
+		this.setState({
+			nombreProducto: '',
+			filtro: '',
+			productosComprados: [],
+			costoSubTotal: 0,
+			costoTotal: 0,
+		});
+	};
 
 	render() {
 		return (
@@ -156,12 +156,16 @@ export default class PaginaInicial extends React.Component {
 					</div>
 					{this.state.productosComprados.length === 0 ? (
 						//costo total= 0 ¿como agregar?
-						<div className='cartContainer'>
-							<p>Agrega productos al carrito! Comienza .</p>
+						<div className='cartContainer col-md-6'>
+							<Alert variant="success">
+								<Alert.Heading>No hay productos en tu carrito</Alert.Heading>
+								<p>Comienza ahora!</p>
+
+							</Alert>
 						</div>
 					) : (
 							<div className='cartContainer'>
-								<Table striped bordered hover >
+								<Table responsive >
 									<thead>
 										<tr>
 											<th>Cantidad</th>
@@ -177,7 +181,7 @@ export default class PaginaInicial extends React.Component {
 												<td>{producto.cantidad}</td>
 												<td key={index}>{producto.name}</td>
 												<td>{producto.price}</td>
-												<td>Precio Total</td>
+												<td>{producto.price * producto.cantidad}</td>
 												<Button
 													variant='primary'
 													type="button"
@@ -192,14 +196,14 @@ export default class PaginaInicial extends React.Component {
 										<tr col-span="5"> Sub-Total:$
 										<td>{this.state.costoSubTotal}</td>
 										</tr>
-										<tr>Total:$
+										<tr>Total(IVA):$
 										<td>{this.state.costoTotal}</td>
 										</tr>
 									</tbody>
 
 								</Table>
 
-								<Button variant='primary' type='submit'>
+								<Button variant='primary' type='submit' onClick={() => this.finalizarCompra()}>
 									Finaliza tu compra
 					</Button>
 							</div>

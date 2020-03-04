@@ -23,8 +23,6 @@ class Login extends Component {
 		event.preventDefault();
 		const { email, contrasena } = this.state;
 		loginUser({ email, contrasena }).then(({ status }) => {
-			/* window.location = '/PaginaInicial';
-			this.setState({ email: '', contrasena: '' }); */
 			if (status === 200) {
 				this.setState({ email: '', contrasena: '' });
 				sessionStorage.setItem("usuarioLogueado", 1);
@@ -38,10 +36,6 @@ class Login extends Component {
 				console.log(response);
 			}); */
 	};
-
-
-
-
 	render() {
 		return (
 			<div className='auth-inner'>
@@ -74,8 +68,6 @@ class Login extends Component {
 					<p className='forgot-password text-right'>
 						¿No tienes usuario? <a href='/RegistrarUsuario'>Registrate</a>
 					</p>
-
-
 				</Form>
 				{
 					this.state.errorMsg && <Alert variant="danger">
